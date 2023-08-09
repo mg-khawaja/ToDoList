@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.ListView;assembly=Syncfusion.Maui.ListView"
+             xmlns:vm="clr-namespace:ToDoList.ViewModels"
+             xmlns:models="clr-namespace:ToDoList.Models"
+             x:DataType="vm:GroceryViewModel"
+             
+             x:Name="groceryPage"
+             x:Class="ToDoList.Pages.GroceryPage"
+             Title="{Binding Title}">
+    <Grid>
+        <syncfusion:SfListView x:Name="listView"
+                               ItemsSource="{Binding Grocery.Items}" EmptyView="No Items"
+                               SelectionMode="None" LoadMorePosition="End" LoadMoreOption="Auto"
+                               LoadMoreCommand="{Binding LoadMoreCommand}"
+                               LoadMoreCommandParameter="{Binding Source={x:Reference listView}}"
+                               ItemSize="100" CanMaintainScrollPosition="True">
+            <syncfusion:SfListView.ItemTemplate>
+                <DataTemplate x:DataType="models:ToDoItem">
+                    <SwipeView >
+                        <SwipeView.LeftItems>
+                            <SwipeItems Mode="Execute">
+                                <SwipeItem Text="Done"
+                                   BackgroundColor="Green"
+                                       Command="{Binding Path=BindingContext.ItemDoneCommand,  
+                                            Source={x:Reference Name=groceryPage}}" 
+                            CommandParameter="{Binding .}"/>
+                            </SwipeItems>
+                        </SwipeView.LeftItems>
+                        <StackLayout Padding="10">
+                            <Label Text="{Binding Name}" TextColor="Black" FontAttributes="Bold" FontSize="20"/>
+                            <Label TextColor="Black" FontSize="20">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="Price: "/>
+                                        <Span Text="{Binding Price}"/>
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
+                        </StackLayout>
+                    </SwipeView>
+                </DataTemplate>
+            </syncfusion:SfListView.ItemTemplate>
+        </syncfusion:SfListView>
+        <Frame BackgroundColor="DeepSkyBlue" HeightRequest="50" WidthRequest="50" 
+               CornerRadius="25" HasShadow="True" Padding="0" Margin="20"
+               HorizontalOptions="EndAndExpand" VerticalOptions="EndAndExpand">
+            <Label Text="+" TextColor="White" FontSize="20"
+                   HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding AddItemCommand}"/>
+            </Frame.GestureRecognizers>
+        </Frame>
+        <StackLayout HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" 
+                     IsVisible="{Binding IsBusy}">
+            <ActivityIndicator VerticalOptions="CenterAndExpand" HorizontalOptions="CenterAndExpand" 
+                               IsRunning="True" />
+        </StackLayout>
+    </Grid>
+</ContentPage>
